@@ -1,2 +1,0 @@
-# k8s_Frontend_Backend_app2
-k8s_Frontend_Backend_app2
