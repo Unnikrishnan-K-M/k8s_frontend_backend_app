@@ -1,6 +1,6 @@
 # k8s_Frontend_Backend_app2
 k8s_Frontend_Backend_app2
-
+https://aws.plainenglish.io/deploy-front-backend-application-on-kubernetes-fa5f46d694c
 
 ![image](https://github.com/Unnikrishnan-K-M/k8s_Frontend_Backend_app2/assets/80303619/6cc3ca29-95a5-4733-b9af-0b5bea89b093)
 
@@ -111,6 +111,7 @@ echo -n 'rootlogin' | base64
 cm9vdGxvZ2lu 
 echo -n 'rootpassword' | base64
 cm9vdHBhc3N3b3Jk
+
 Now paste these values into our Secret config file. I’m using vi to edit within the terminal but you could also do this with an IDE like VScode.
 
 vi mongo-secert.yaml
@@ -122,6 +123,7 @@ type: Opaque
 data:
     mongo-root-username: cm9vdGxvZ2lu
     mongo-root-password: cm9vdHBhc3N3b3Jk
+    
 Keep in mind we haven’t created anything yet. Everything we’ve done so far has been prep work. If we tried to create a deployment that references a secret that doesn’t exist, you would get an error. Time to apply our secret by running:
 
 kubectl apply -f mongo-secret.yaml 
@@ -130,6 +132,8 @@ kubectl get service #run this to confirm it was created
 Now we’re able to deploy our MongoDB with the following command:
 
 kubectl apply -f mongodb-depl.yaml
+
+
 STEP 4: Create an Internal Service for MongoDB
 The internal service will allow other components or pods to communicate with the MongoDB container. Now we could create a separate YAML file for our service or alternatively add it to our MongoDB deployment. Three dashes--- in Yaml is interpreted as the syntax for document separation.
 
@@ -177,6 +181,7 @@ spec:
     - protocol: TCP
       port: 27017
       targetPort: 27017
+      
 To apply these changes we’ll run the same command that we initially ran to create it it.
 
 kubectl apply -f mongodb-depl.yaml
@@ -241,6 +246,7 @@ spec:
             configMapKeyRef:
               name: mongodb-configmap
               key: database_url
+              
 This image will require a database name to connect, for which we will require a MongoDB address or internal service. We will specify the database URL inside ConfigMap in the next phase.
 
 STEP 6: Create a ConfigMap for Mongo Express
@@ -253,12 +259,16 @@ metadata:
   name: mongodb-configmap
 data:
   database_url: mongodb-service
+
+  
 database_url : is MongoDB's internal service name, which we specified when we created the internal service in step 4.
 
 Deploy both by running :
 
 kubectl apply -f mongo-configmap.yaml
 kubectl apply -f mongo-express.yaml
+
+
 STEP 8: Create an External Service for Express
 Similar to MongoDB, we could add the external service for express within our Mongo Express manifest. However, to showcase that a service can be deployed by itself, we will not merge the two this time.
 
@@ -276,6 +286,8 @@ spec:
       port: 8081
       targetPort: 8081
       nodePort: 30000
+
+      
 Let’s `unpack` what is going on in this file. We have exposed a service port at 8081.
 
 targetPort:8081 is where the container port is listening.
@@ -291,6 +303,7 @@ kubectl describe service mongodb-service
 kubectl get pod -o wide
 
 STEP 9: Quality Assurance Check
+
 This command will assign a public IP address to an external service
 
 minikube service mongo-express-service
@@ -299,9 +312,11 @@ We can access the application in our browser on port 30000, as given in the exte
 
 
 Deletes a local Kubernetes cluster
+
 When you’re done testing or developing within Minikube, the cleanup is as simple as a single command. This command deletes the VM and removes all associated files.
 
 minikube delete
+
 Conclusion
 We set up a complete, end-to-end Mongodb application on Kubernetes and used our browser to access it. Using an internal service, we built a mongodb pod and made it available to the other component. We also developed a single pod for mongo-express to modify mongodb and external service to make it reachable outside the cluster or external sources.
 
