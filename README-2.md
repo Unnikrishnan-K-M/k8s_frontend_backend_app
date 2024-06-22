@@ -1,5 +1,5 @@
 # k8s_Frontend_Backend_app2
-k8s_Frontend_Backend_app2
+k8s_Frontend_Backend_app2, reference doc:
 https://aws.plainenglish.io/deploy-front-backend-application-on-kubernetes-fa5f46d694c
 
 ![image](https://github.com/Unnikrishnan-K-M/k8s_Frontend_Backend_app2/assets/80303619/6cc3ca29-95a5-4733-b9af-0b5bea89b093)
